@@ -4,70 +4,68 @@ import pytest
 from django.test import Client
 from django.contrib.auth import get_user_model
 
-@pytest.mark.django_db
+
+@pytest.fixture
+def client():
+    """
+    create a client to use in requests
+    """
+    return Client()
+
+@pytest.fixture
+def login_url():
+    """
+    url to login tests
+    """
+    return "/auth/token/login/"
+
+@pytest.fixture
+def user():
+    """
+    create an user for tests
+    """
+    model_user = get_user_model()
+    return model_user.objects.create_user(username="lucasreis", password="12345678")
+
 @pytest.mark.auth
-def test_login_success():
+def login_request(login_url, client, user, payload, success = True):
     """
     test login request success with valid data
     """
-    # Given: signed user
-    user = get_user_model()
-    user.objects.create_user(username="lucasreis", password="12345678")
-
     # When: send a POST request with valid data
-    client = Client()
     response = client.post(
-        "/auth/token/login/",
-        data=json.dumps({"username": "lucasreis", "password": "12345678"}),
+        login_url,
+        data=json.dumps(payload),
         content_type="application/json"
         )
 
     # Then: recebo 200 OK e um auth_token na resposta
-    assert response.status_code == 200
-    assert "auth_token" in response.json()
+    assert response.status_code == (200 if success else 400)
+    assert ("auth_token" if success else "non_field_errors") in response.json()
 
 @pytest.mark.django_db
 @pytest.mark.auth
-def test_login_invalid_password():
+def test_login_success(login_url, client, user):
+    """
+    test login request success with signed user valid data
+    """
+    payload = {"username": "lucasreis", "password": "12345678"}
+    login_request(login_url, client, user, payload=payload, success=True)
+
+@pytest.mark.django_db
+@pytest.mark.auth
+def test_login_invalid_password(login_url, client, user):
     """
     test login request failure with invalid password
     """
-    # Given: not signed user
-    user = get_user_model()
-    user.objects.create_user(username="lucasreis", password="12345678")
-
-    # When: send a POST request with invalid data
-    client = Client()
-    response = client.post(
-        "/auth/token/login/",
-        data=json.dumps({"username": "johndoe", "password": "password"}),
-        content_type="application/json"
-        )
-
-    # Then: receive a error message
-    response_json = response.json()
-    assert response.status_code == 400
-    assert 'Impossível fazer login com as credenciais fornecidas.' in response_json["non_field_errors"]
+    payload = {"username": user.username, "password": user.password + "_wrong"}
+    login_request(login_url, client, user, payload=payload, success = False)
 
 @pytest.mark.django_db
 @pytest.mark.auth
-def test_login_invalid_body():
+def test_login_invalid_body(login_url, client, user):
     """
-    test login request failure with invalid parameters
+    test login request failure with invalid payload
     """
-    # Given: not signed user
-    user = get_user_model()
-    user.objects.create_user(username="lucasreis", password="12345678")
-
-    # When: send a POST request with invalid data
-    client = Client()
-    response = client.post(
-        "/auth/token/login/",
-        data=json.dumps({"other": "parameters"}),
-        content_type="application/json"
-        )
-
-    # Then: receive a error message
-    response_json = response.json()
-    assert response.status_code == 400
-    assert 'Impossível fazer login com as credenciais fornecidas.' in response_json["non_field_errors"]
+    payload = {"garbage": "non_sense_parameters"}
+    login_request(login_url, client, user, payload=payload, success = False)
