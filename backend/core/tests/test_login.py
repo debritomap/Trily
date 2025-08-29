@@ -4,7 +4,6 @@ import pytest
 from django.test import Client
 from django.contrib.auth import get_user_model
 
-
 @pytest.fixture
 def client():
     """
@@ -27,7 +26,6 @@ def user():
     model_user = get_user_model()
     return model_user.objects.create_user(username="lucasreis", password="12345678")
 
-@pytest.mark.auth
 def login_request(login_url, client, user, payload, success = True):
     """
     test login request success with valid data
