@@ -62,42 +62,44 @@ export default function Login() {
 
   return (
     <div className="max-w-sm mx-auto p-6">
-      <Form
-        className="space-y-4"
-        onSubmit={(e) => {
-          e.preventDefault(); // <- precisa invocar
-          if (!email || !password) {
-            addToast({
-              title: "Campos obrigatórios",
-              description: "Preencha e-mail e senha.",
-            });
-            return;
-          }
-          void makeLogin();
-        }}>
-        <Input
-          name="email"
-          label="E-mail"
-          type="email"
-          value={email}
-          // HeroUI costuma usar onValueChange; se preferir, pode usar onChange={(e)=>setEmail(e.target.value)}
-          onValueChange={setEmail}
-          isRequired
-          autoComplete="username"
-        />
-        <Input
-          name="password"
-          label="Senha"
-          type="password"
-          value={password}
-          onValueChange={setPassword}
-          isRequired
-          autoComplete="current-password"
-        />
-        <Button type="submit" fullWidth isDisabled={isLoading}>
-          {isLoading ? <Spinner size="sm" /> : "Entrar"}
-        </Button>
-      </Form>
+      {isLoading ? (
+        <Spinner className="w-full h-full" />
+      ) : (
+        <Form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault(); // <- precisa invocar
+            if (!email || !password) {
+              addToast({
+                title: "Campos obrigatórios",
+                description: "Preencha e-mail e senha.",
+              });
+              return;
+            }
+            void makeLogin();
+          }}>
+          <Input
+            name="email"
+            label="E-mail"
+            type="email"
+            value={email}
+            // HeroUI costuma usar onValueChange; se preferir, pode usar onChange={(e)=>setEmail(e.target.value)}
+            onValueChange={setEmail}
+            isRequired
+            autoComplete="username"
+          />
+          <Input
+            name="password"
+            label="Senha"
+            type="password"
+            value={password}
+            onValueChange={setPassword}
+            isRequired
+            autoComplete="current-password"
+          />
+          <Button type="submit">Entrar</Button>
+        </Form>
+      )}
     </div>
   );
 }

@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@heroui/spinner": "^2.2.21",
+    "@heroui/system": "^2.4.20",
+    "@heroui/theme": "^2.4.20",
+    "@heroui/toast": "^2.0.14",
+    "axios": "^1.11.0",
+    "framer-motion": "^12.23.12",
+    "tailwindcss": "^4.0.0"
+  }
+}
