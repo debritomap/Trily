@@ -9,9 +9,9 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-import environ
 import os
 from pathlib import Path
+import environ
 
 env = environ.Env()
 
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'corsheaders',
+    'courses',
 ]
 
 MIDDLEWARE = [
@@ -63,9 +64,7 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     'http://192.168.15.186:5100',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://192.168.15.186:3000',
-    
-])
+    'http://192.168.15.186:3000'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[
     'http://localhost:5100',
     'http://127.0.0.1:5100',
