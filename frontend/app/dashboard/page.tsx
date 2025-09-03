@@ -1,26 +1,23 @@
-"use client";
-import React from "react";
-import { Button } from "@heroui/button";
-import { useRouter } from "next/navigation";
+import VdoCipherPlayer from "@/components/VdoCipherPlayer.tsx";
 
 export default function Dashboard() {
-  const dashRouter = useRouter();
-
-  function logout() {
-    dashRouter.push("/");
-  }
+  // ⚠️ NÃO deixe OTP/playbackInfo hardcoded em produção (veja nota abaixo)
+  const otp =
+    "20160313versASE313c63a68c96144b8d770464f6bac27531b38825875e952ca";
+  const playbackInfo =
+    "eyJ2aWRlb0lkIjoiMTA0MWVkNThjZDU0NGY5YmE2MGEzYWE1ZGEzZjExZWYifQ==";
 
   return (
-    <div className="w-full h-full">
-      Dashboard
-      <Button
-        className="top-10"
-        onClickCapture={(e) => {
-          e.defaultPrevented;
-          logout();
-        }}>
-        Sair
-      </Button>
-    </div>
+    <main className="p-6">
+      <VdoCipherPlayer
+        otp={otp}
+        playbackInfo={playbackInfo}
+        configuration={
+          {
+            // autoplay: true,
+          }
+        }
+      />
+    </main>
   );
 }

@@ -16,9 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
+from rest_framework import routers
+from courses.views import CourseViewSet, VideoViewSet, ChapterViewSet
+
+router = routers.DefaultRouter()
+router.register(r'courses', CourseViewSet)
+router.register(r'videos', VideoViewSet)
+router.register(r'chapters', ChapterViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
+    path('', include(router.urls)),
 ]
